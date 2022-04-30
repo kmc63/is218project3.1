@@ -30,12 +30,7 @@ def test_adding_user(application):
         assert db.session.query(Song).count() == 2
         song1 = Song.query.filter_by(title='test').first()
         assert song1.title == "test"
-        #changing the title of the song
-        song1.title = "SuperSongTitle"
-        #saving the new title of the song
-        db.session.commit()
-        song2 = Song.query.filter_by(title='SuperSongTitle').first()
-        assert song2.title == "SuperSongTitle"
+
         #checking cascade delete
         db.session.delete(user)
         assert db.session.query(User).count() == 0
