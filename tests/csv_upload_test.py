@@ -12,7 +12,7 @@ def test_login(application):
         db.session.add(user)
 
         list_of_songs = []
-        file = open('../uploads/music.csv')
+        file = open('../../uploads/music.csv')
         csv_file = csv.DictReader(file)
         for row in csv_file:
             list_of_songs.append(Song(row['Name'], row['Artist'], row['Genre'], row['Year']))
