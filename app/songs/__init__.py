@@ -36,7 +36,7 @@ def songs_upload():
         filename = secure_filename(form.file.data.filename)
         filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         form.file.data.save(filepath)
-        #user = current_user
+        user = current_user
         list_of_songs = []
         with open(filepath) as file:
             csv_file = csv.DictReader(file)
