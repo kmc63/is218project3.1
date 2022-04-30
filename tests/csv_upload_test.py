@@ -1,4 +1,5 @@
 import csv
+import requests
 
 from app.db import db
 from app.db.models import User, Song
@@ -12,8 +13,10 @@ def test_login(application):
         db.session.add(user)
 
         list_of_songs = []
-        file = open('../../uploads/music.csv')
-        csv_file = csv.DictReader(file)
+        url = 'https://api.github.com/repos/kmc63/is218project3.1/contents/blob/uploads/music.csv'
+        req = requests.get(url)
+
+        csv_file = csv.DictReader(req)
         for row in csv_file:
             list_of_songs.append(Song(row['Name'], row['Artist'], row['Genre'], row['Year']))
 
