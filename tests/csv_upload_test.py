@@ -11,8 +11,6 @@ def test_login(application):
         user = User('keith@webizly.com', 'testtest', is_admin=1)
         db.session.add(user)
 
-        user.songs = [Song("test", "smap", "punk"), Song("test2", "te", "rock")]
-
         list_of_songs = []
         file = open('/uploads/music.csv')
         csv_file = csv.DictReader(file)
