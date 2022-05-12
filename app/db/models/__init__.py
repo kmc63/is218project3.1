@@ -8,16 +8,6 @@ from flask_login import UserMixin
 from sqlalchemy_serializer import SerializerMixin
 Base = declarative_base()
 
-location_user = db.Table('location_user', db.Model.metadata,
-    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
-    db.Column('location_id', db.Integer, db.ForeignKey('locations.id'))
-)
-song_user = db.Table('song_user', db.Model.metadata,
-    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
-    db.Column('song_id', db.Integer, db.ForeignKey('songs.id'))
-)
-
-
 
 class Song(db.Model,SerializerMixin):
     __tablename__ = 'songs'
@@ -30,39 +20,12 @@ class Song(db.Model,SerializerMixin):
     user = relationship("User", back_populates="songs", uselist=False)
 
 
-    def __init__(self, title, artist, genre, year):
+    def __init__(self, title, artist, genre, year, user_id):
         self.title = title
         self.artist = artist
         self.genre = genre
-        self.user_id = 1 #not how it actually works but I am close
+        self.user_id = user_id
         self.year = year
-
-
-
-
-class Location(db.Model, SerializerMixin):
-    __tablename__ = 'locations'
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(300), nullable=True, unique=False)
-    longitude = db.Column(db.String(300), nullable=True, unique=False)
-    latitude = db.Column(db.String(300), nullable=True, unique=False)
-    population = db.Column(db.Integer, nullable=True, unique=False)
-
-
-    def __init__(self, title, longitude, latitude, population):
-        self.title = title
-        self.longitude = longitude
-        self.latitude = latitude
-        self.population = population
-
-    def serialize(self):
-        return {
-            'title': self.title,
-            'long': self.longitude,
-            'lat': self.latitude,
-            'population': self.population,
-        }
-
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -74,11 +37,7 @@ class User(UserMixin, db.Model):
     registered_on = db.Column('registered_on', db.DateTime)
     active = db.Column('is_active', db.Boolean(), nullable=False, server_default='1')
     is_admin = db.Column('is_admin', db.Boolean(), nullable=False, server_default='0')
-    #songs = db.relationship("Song", back_populates="user", cascade="all, delete")
-    locations = db.relationship("Location",
-                    secondary=location_user, backref="users")
-    songs = db.relationship("Song",
-                    secondary=song_user, backref="users")
+    songs = db.relationship("Song", back_populates="user", cascade="all, delete")
 
     def __init__(self, email, password, is_admin):
         self.email = email
